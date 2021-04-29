@@ -245,3 +245,35 @@ export function useStar(num,callback){
     }
   }
 ```
+
+#### treemenu
+
+- 原理：利用vue递归组件，实现无限菜单，三个组件，难点还是在于ui的实现。
+- item
+- ![image-20210429143453164](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210429143453164.png)
+- subitem
+- ![image-20210429143433425](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20210429143433425.png)
+- 具名插槽的语法糖
+
+```
+<template v-slot:title> == <template #title>
+```
+
+- 不具名插槽可以v-for，具名插槽无法使用v-for
+- template可以做占位符的效果，不会被渲染，https://www.cnblogs.com/tu-0718/p/11177236.html，在多个el需要v-for并且不希望增加额外的el的情况下载template使用v-for可以减少dom
+- v-show的位置
+
+```
+<template>
+  <div class="wrap" @mouseenter="mouseenter" @mouseleave="mouseleave">
+    <slot name='title'></slot>
+    <span class="icon">&gt;</span>
+    <div class="sub-item" v-show="detailShow">
+      <slot></slot>
+    </div>
+  </div>
+</template>
+// mouseenter和mouseleave不应该写在icon，应该要写在wrap上面，不然的话一移动sub-item，整个div就会消失
+// mouseenter和mouseleave一对，mouseover和mouseout为一对，一般用enter
+```
+
