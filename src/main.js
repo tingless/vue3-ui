@@ -10,6 +10,17 @@ import zxxUi from "./libs/ui"
 // createApp(App).use(zxxUi).mount('#app')
 
 // treemenu
-import App from "./TreeMenu-app.vue"
-createApp(App).use(zxxUi).mount('#app')
+// import App from "./TreeMenu-app.vue"
+// createApp(App).use(zxxUi).mount('#app')
 
+// selector
+// import App from "./Selector-app.vue"
+// createApp(App).use(zxxUi).mount('#app') 
+
+// modal
+// import App from "./Modal-app.vue"
+// createApp(App).use(zxxUi).mount('#app') 
+
+// carousel
+import App from "./Carousel-app.vue"
+createApp(App).use(zxxUi).mount('#app') 

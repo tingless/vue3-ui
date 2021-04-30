@@ -6,6 +6,12 @@ import TreeMenuItem from "./TreeMenu/item.vue"
 import TreeMenuSubItem from "./TreeMenu/subItem.vue"
 import reTreeMenuItem from "./TreeMenu/resubItem"
 
+import Selector from "./Selector"
+
+import Modal from "./components/Modal.vue"
+
+import Carousel from "./Carousel"
+
 const zxxUi ={}
 
 zxxUi.install = function(Vue){
@@ -17,6 +23,11 @@ zxxUi.install = function(Vue){
   Vue.component(TreeMenuSubItem.name,TreeMenuSubItem)
   Vue.component(reTreeMenuItem.name,reTreeMenuItem)
 
+  Vue.component(Selector.name,Selector)
+
+  Vue.component(Modal.name,Modal)
+
+  Vue.component(Carousel.name,Carousel)
 }
 
 export default zxxUi

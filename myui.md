@@ -277,3 +277,133 @@ export function useStar(num,callback){
 // mouseenter和mouseleave一对，mouseover和mouseout为一对，一般用enter
 ```
 
+#### selector
+
+- 原理：改造input框，加上一个div下拉框，达到记忆，筛选内容的ui
+
+- filter的使用
+
+```
+    // 会根据true/false来决定是否返回item
+    // 箭头函数有中括号得加return
+    // 不会改变原来函数
+    // 得到的结果是一个数组
+    var arr1 = arr.filter((item)=>item === 2)
+             = arr.filter((item)=>{
+               return item === 2
+             })
+```
+
+- map
+
+```
+ // map必须调用return 原数组的每个item，不然返回值的数组会undefined
+ // 返回一个数组，数组包含每个原数组的处理后的值，如果没有返回就为undefined占位
+ // 不适合进行过滤，只适合对原数组或符合item的对象进行操作
+  
+ var arr1 = arr.map((item)=>{
+  if(item === 2){
+    return item *2
+  }
+  return item
+})
+    
+var arr1 = arr.map((item)=>item*2)
+```
+
+- toLowerCase/toUpperCase：注意得大写，而且只对String有用
+
+- includes
+
+```
+includes() 方法用于判断字符串是否包含指定的子字符串。
+如果找到匹配的字符串则返回 true，否则返回 false。
+注意： includes() 方法区分大小写。
+所以得提前用转化大小写进行区分
+```
+
+- 点击事件消失
+
+```
+写好逻辑之后发现点击item的可选项并没有触发点击事件
+// 通过查询源头发现连最初的点击事件都没有触发
+// 原因：div消失太快没有触发。display的消失会导致点击事件的失效
+// 通过setTimeout来延缓div的消失达到点击事件的触发
+
+oInput.addEventListener('blur',function(){
+  oIcon.className = 'icon iconfont icon-arrowdown'
+  // 延缓div的消失
+  setTimeout(()=>{
+    oMenu.style.display = 'none'
+    if(this.value.length === 0){
+      oPlaceholder.style.display = 'block'
+    } 
+  },150)
+},false)
+```
+
+- 记忆功能
+
+```
+触发blur事件，如果没有点击item还是显示最近一次的item
+	// 这里的oldValue其实是props传进来的值
+	// 函数的value可以是props或者setup里的变量
+    <input 
+      type="text" 
+      class="input" 
+      :value="oldValue"
+      @input="itemInput"
+      @focus="itemInput"
+      ref="InputValue"
+      @blur="rememberValue(oldValue)"
+    >
+    
+      const rememberValue = (oldValue)=>{
+      // _input.value记录的是实时的
+      // instance是vue实例，里面其实也有value,但是el里面取得更加直接
+      // 这个值其实是props传递过来的！！！
+      const _input = instance.refs.InputValue;
+      console.log(instance.refs,instance);
+      console.dir(instance.refs.InputValue);
+      if(_input.value.length>0){
+        console.log( _input.value);
+        _input.value = oldValue
+      }
+    }
+```
+
+- 两种获取el 的方法
+
+```
+1. vue3的api
+<div 
+  class="ui-modal"
+  // 设定ref属性
+  ref="uiModal"
+>
+
+const instance = getCurrentInstance（）
+instance.refs实例下面的refs保存着el
+
+2. 
+ 原理：设定一个响应式，并且通过return把div与这个值联系起来
+ 可以在onMounted里面进行取值操作
+<div 
+  class="ui-modal"
+  // 设定ref属性
+  ref="uiModal"
+>
+
+set(){
+    // 必须名字一样，而且ref为null
+    const uiModal = ref(null)
+    onMounted(()=>{
+        // 可以拿到值了！
+        console.log(uiModal)
+    })
+    return {
+    uiModal
+    }
+}
+```
+
