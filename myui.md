@@ -407,3 +407,120 @@ set(){
 }
 ```
 
+#### carousel
+
+- 实现方式：所有的图片都通过position,叠放在一个地方，通过v-if的属性来控制显示，再显示中通过transfrom=》translateX与vue3的动画来达到移动的效果。即将消失的图片x为0 - 100%，即将进来的图片为-100% - 0 。如果到一组图片的最后，直接跳到第一张（其实就是v-if显示第一张）。
+
+- 图片路径的动态引入
+
+```
+再vue的js代码中，引入图片必须用require/在html中也可以使用require
+可以实现v-for的大量动态引入
+<img :src="require(`./assets/${item.img_name}`)">
+```
+
+- 定时器的运用与消除
+
+```
+vue3 中定时器得在dom消除之前被清除，即onBeforeUnmount钩子函数中使用
+	// 设置定时器
+	let t;
+	onMounted(()=>{
+      if(props.autoPlay){
+        t = setInterval(()=>{
+          autoplay(state.dir)
+        },props.duration)
+      }
+    })
+	// 清除定时器
+    onBeforeUnmount(()=>{
+      clearInterval(t)
+      t = null;
+    })
+```
+
+- 获得slot的长度
+
+```
+需求：一个父组件中，内部有个slot，需要获取这个slot被替代传入的组件的个数
+原理：获取实例，实例下面的slots属性是一个函数就执行这个函数，然后是一个数组，再拿到第一项的children就是被替代传入的组件的个数
+let instance = getCurrentInstance()
+let length = instance.slots.default()[0].children.length,
+```
+
+- 对于图片的展示
+
+```
+需求：将这个div通过v-if展示出来，这个组件其实就是v-for出来的单个图片的组件  
+    <div v-if="currentIndex === selfIndex" class="carousel-item">
+      <slot></slot>
+    </div>
+原理：因为是v-for遍历出来的，其实有一个唯一的值可以作为selfIndex,currentIndex可以通过父组件获得
+    const instance = getCurrentInstance()
+    const state = reactive({
+    // 因为是v-for遍历出来的，可以取得实例的vnode.key就是唯一值，相当于index
+      selfIndex: instance.vnode.key,
+    // 这个就是取父组件的ctx的属性
+      currentIndex: instance.parent.ctx.currentIndex
+    })
+    
+    // 父组件设置属性，刚开始是传入的初始值，后面随着值的变化达到轮播的效果
+    const state = reactive({
+      currentIndex:props.initial,
+    })
+```
+
+- props的响应式的值
+
+```
+产生原因：单独使用props再视图上是响应式的，但是如果把props赋值给一个值，这个值只会取得最初的props，并不会发生改变
+    const state = reactive({
+      // currentIndex是非响应式的，和在reactive里面创建时无关的。比较特殊
+      currentIndex: instance.parent.ctx.currentIndex
+    })
+    // 因此需要通过watch来监听父组件的改变来改变state.currentIndex的值
+    watch(()=>{
+      return instance.parent.ctx.currentIndex
+    },(value)=>{
+      state.currentIndex = value
+    })
+// 类似于vue2中，也得用watch去监听props的值的改变，直接在页面上使用是非响应式的。
+```
+
+- vue3的transition的使用
+
+```
+// 对于v-if/v-show/display就可以再外面包一层transition就可以使用过渡动画
+<template>
+  <transition>
+    <div v-if="currentIndex === selfIndex" class="carousel-item">
+      <slot></slot>
+    </div>
+  </transition>
+</template>
+// 在样式里面设置过渡效果
+	// 一共有6个属性 v-enter-active,v-enter,v-enter-to,v-leave-active,v-leave,v-leave-to
+	// active里面设置过渡的样式
+	// 属性的顺序也有关系，一定先写.v-enter-active在写.v-enter-to
+	// 通过设置位移来实现动画效果
+  .v-enter-active,
+  .v-leave-active{
+    transition: all .2s linear;
+  }
+  // vue3这里有错误，本来应该是v-enter的，现在只能用v-enter-active
+  .v-enter-active{
+    transform: translateX(100%);
+  }
+  .v-enter-to{
+    transform: translateX(0);
+  }
+  // vue3这里有错误，本来应该是v-enter的，现在只能用v-enter-active
+  .v-leave-active{
+    transform: translateX(0);
+  }
+  .v-leave-to{
+    transform: translateX(-100%);
+  }
+
+```
+
