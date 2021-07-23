@@ -20,7 +20,7 @@
 </template>
 
 <script>
-
+1231123
 import CarouselItem from "./libs/ui/Carousel/item"
 import carData from "./libs/ui/data/carData"
 

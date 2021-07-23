@@ -24,5 +24,3 @@ import zxxUi from "./libs/ui"
 // carousel
 import App from "./Carousel-app.vue"
 createApp(App).use(zxxUi).mount('#app') 
-
-// macbook test
