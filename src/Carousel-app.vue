@@ -1,6 +1,6 @@
 <template>
   <div class="app">
-    <Carousel 
+    <!-- <Carousel 
       class="wrap"
       :autoPlay="true"
       :duration="3000"
@@ -16,6 +16,13 @@
         <img :src="require(`./assets/${item.img_name}`)">
       </CarouselItem>
     </Carousel>
+    <div>123</div> -->
+<base-counter v-slot="timeObj" :time="countDown">
+  <div class="count-down">
+    <div class="icon"></div>
+    {{timeObj.d}}天{{timeObj.hh}}小时{{timeObj.mm}}分钟{{timeObj.ss}}秒
+  </div>
+</base-counter>
   </div>
 </template>
 
@@ -23,11 +30,13 @@
 1231123
 import CarouselItem from "./libs/ui/Carousel/item"
 import carData from "./libs/ui/data/carData"
+import Timer from './libs/ui/Timer/Timer.vue'
 
 export default {
   name: 'App',
   components: {
-    CarouselItem
+    CarouselItem,
+    Timer
   },
   setup(){
     return {
